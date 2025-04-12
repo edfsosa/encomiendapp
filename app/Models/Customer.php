@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
@@ -19,8 +20,6 @@ class Customer extends Model
         'phone_alt',
         'email',
         'is_gov_supplier',
-        'address',
-        'house_number',
         'operation_type',         // B2B / B2C
         'agent_id',
         'group',
@@ -35,4 +34,9 @@ class Customer extends Model
         'created_at_custom' => 'date',
         'inactive_at' => 'date',
     ];
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
 }

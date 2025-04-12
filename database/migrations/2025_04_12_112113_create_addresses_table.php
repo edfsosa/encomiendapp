@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->string('name'); // Nombre de la dirección (casa, oficina, etc.)
+            $table->string('house_number'); // Número de casa
+            $table->string('address'); // Dirección
+            $table->string('city'); // Ciudad
+            $table->string('department'); // Departamento
+            $table->string('postal_code')->nullable(); // Código postal
             $table->timestamps();
         });
     }

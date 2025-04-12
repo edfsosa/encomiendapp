@@ -7,7 +7,7 @@ use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\Customer;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\{Section, TextInput, Select, DatePicker, Textarea, Toggle};
+use Filament\Forms\Components\{Section, TextInput, Select, DatePicker, Textarea, Toggle, Repeater};
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -98,7 +98,7 @@ class CustomerResource extends Resource
                             ->required(),
                         TextInput::make('phone')
                             ->label('Teléfono')
-                            ->placeholder('Teléfono del cliente (sin el cero)')
+                            ->placeholder('Número (sin el cero)')
                             ->numeric()
                             ->minValue(1)
                             ->minLength(8)
@@ -107,7 +107,7 @@ class CustomerResource extends Resource
                             ->required(),
                         TextInput::make('phone_alt')
                             ->label('Teléfono 2')
-                            ->placeholder('Teléfono alternativo (sin el cero)')
+                            ->placeholder('Alternativo (sin el cero)')
                             ->numeric()
                             ->minLength(8)
                             ->maxLength(11)
@@ -123,24 +123,6 @@ class CustomerResource extends Resource
                                     $set('email', strtolower($state));
                                 }
                             })
-                            ->required(),
-                        TextInput::make('address')
-                            ->label('Dirección')
-                            ->placeholder('Dirección domiciliaria del cliente')
-                            ->maxLength(100)
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('address', strtoupper($state));
-                                }
-                            })
-                            ->required(),
-                        TextInput::make('house_number')
-                            ->label('Nro. Casa')
-                            ->placeholder('Número de la casa')
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxLength(5)
                             ->required(),
                         Toggle::make('is_gov_supplier')
                             ->label('¿Es Proveedor del Estado?')
@@ -165,6 +147,76 @@ class CustomerResource extends Resource
                                 'B2F' => 'B2F',
                             ])
                             ->required(),
+                        Repeater::make('addresses')
+                            ->relationship('addresses')
+                            ->label('Direcciones')
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Nombre')
+                                    ->placeholder('Nombre (casa, oficina, etc.)')
+                                    ->maxLength(60)
+                                    ->reactive()
+                                    ->afterStateUpdated(function (callable $set, $state) {
+                                        if ($state) {
+                                            $set('name', strtoupper($state));
+                                        }
+                                    })
+                                    ->required(),
+                                TextInput::make('house_number')
+                                    ->label('Nro. Casa')
+                                    ->placeholder('Número de la casa')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxLength(5)
+                                    ->required(),
+                                TextInput::make('address')
+                                    ->label('Dirección')
+                                    ->placeholder('Dirección del domicilio')
+                                    ->maxLength(100)
+                                    ->reactive()
+                                    ->afterStateUpdated(function (callable $set, $state) {
+                                        if ($state) {
+                                            $set('address', strtoupper($state));
+                                        }
+                                    })
+                                    ->required(),
+                                TextInput::make('city')
+                                    ->label('Ciudad')
+                                    ->placeholder('Ciudad del domicilio')
+                                    ->maxLength(50)
+                                    ->reactive()
+                                    ->afterStateUpdated(function (callable $set, $state) {
+                                        if ($state) {
+                                            $set('city', strtoupper($state));
+                                        }
+                                    })
+                                    ->required(),
+                                TextInput::make('department')
+                                    ->label('Departamento')
+                                    ->placeholder('Departamento del domicilio')
+                                    ->maxLength(50)
+                                    ->reactive()
+                                    ->afterStateUpdated(function (callable $set, $state) {
+                                        if ($state) {
+                                            $set('department', strtoupper($state));
+                                        }
+                                    })
+                                    ->required(),
+                                TextInput::make('postal_code')
+                                    ->label('Código Postal')
+                                    ->placeholder('Código postal del domicilio')
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxLength(10)
+                                    ->required(),
+                            ])
+                            ->columns(3)
+                            ->columnSpanFull()
+                            ->collapsible()
+                            ->collapsed()
+                            ->minItems(1)
+                            ->maxItems(3)
+                            ->itemLabel(fn(array $state): ?string => $state['name'] ?? null),
                     ])->columns(3),
 
                 Section::make('Términos comerciales')
@@ -241,7 +293,7 @@ class CustomerResource extends Resource
                     ->label('Email')
                     ->searchable()
                     ->sortable()
-                    ->url(fn (Customer $record): string => 'mailto:' . $record->email)
+                    ->url(fn(Customer $record): string => 'mailto:' . $record->email)
                     ->openUrlInNewTab(),
                 TextColumn::make('created_at')
                     ->label('Creado')

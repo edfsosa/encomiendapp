@@ -22,8 +22,6 @@ return new class extends Migration
             $table->string('phone_alt')->nullable();
             $table->string('email')->nullable();
             $table->boolean('is_gov_supplier')->default(false);
-            $table->string('address')->nullable();
-            $table->string('house_number')->nullable();
             $table->string('operation_type')->nullable(); // B2B / B2C
             $table->foreignId('agent_id')->nullable()->constrained('users'); // O tabla agentes
             $table->string('group')->nullable();
