@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('itineraries', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('agency_id')->constrained()->onDelete('cascade');
-            $table->foreignId('origin_city_id')->constrained('cities')->onDelete('cascade');
-            $table->foreignId('destination_city_id')->constrained('cities')->onDelete('cascade');
+            $table->string('description');
+            $table->boolean('is_active')->default(true);
+            $table->string('type');
+            $table->string('tax'); // Ej: IVA 10%
+            $table->integer('price'); // Precio del producto
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('itineraries');
+        Schema::dropIfExists('products');
     }
 };

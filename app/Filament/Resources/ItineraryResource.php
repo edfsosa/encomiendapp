@@ -40,28 +40,24 @@ class ItineraryResource extends Resource
                     ->preload()
                     ->live()
                     ->required(),
-                TextInput::make('origin')
+                Select::make('origin_city_id')
                     ->label('Origen')
-                    ->placeholder('Ingrese el origen')
-                    ->maxLength(50)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $set('origin', strtoupper($state));
-                        }
-                    })
+                    ->placeholder('Seleccione el origen')
+                    ->relationship('originCity', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->native(false)
                     ->required(),
-                TextInput::make('destination')
+                Select::make('destination_city_id')
                     ->label('Destino')
-                    ->placeholder('Ingrese el destino')
-                    ->maxLength(50)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $set('destination', strtoupper($state));
-                        }
-                    })
-                    ->required(),
+                    ->placeholder('Seleccione el destino')
+                    ->relationship('destinationCity', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->native(false)
+                    ->required()
             ]);
     }
 
@@ -77,11 +73,11 @@ class ItineraryResource extends Resource
                     ->label('Agencia')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('origin')
+                TextColumn::make('originCity.name')
                     ->label('Origen')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('destination')
+                TextColumn::make('destinationCity.name')
                     ->label('Destino')
                     ->sortable()
                     ->searchable(),

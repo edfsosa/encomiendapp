@@ -16,9 +16,18 @@ class Itinerary extends Model
         'destination',
     ];
 
-    public function agency() : BelongsTo
+    public function agency(): BelongsTo
     {
         return $this->belongsTo(Agency::class);
     }
 
+    public function originCity()
+    {
+        return $this->belongsTo(City::class, 'origin_city_id');
+    }
+
+    public function destinationCity()
+    {
+        return $this->belongsTo(City::class, 'destination_city_id');
+    }
 }
