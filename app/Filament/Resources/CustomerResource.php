@@ -19,15 +19,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
-    protected static ?string $navigationGroup = 'Clientes';
-    protected static ?string $navigationLabel = 'Clientes';
     protected static ?string $label = 'Cliente';
     protected static ?string $pluralLabel = 'Clientes';
     protected static ?string $slug = 'clientes';
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $recordTitleAttribute = 'name';
-    protected static ?string $searchLabel = 'Buscar';
-    protected static ?string $searchPlaceholder = 'Buscar cliente...';
 
 
     public static function form(Form $form): Form
@@ -39,7 +35,7 @@ class CustomerResource extends Resource
                         TextInput::make('name')
                             ->label('Nombre')
                             ->placeholder('Nombre del cliente')
-                            ->maxLength(50)
+                            ->maxLength(60)
                             ->reactive()
                             ->afterStateUpdated(function (callable $set, $state) {
                                 if ($state) {
@@ -91,7 +87,8 @@ class CustomerResource extends Resource
                     ->schema([
                         TextInput::make('fantasy_name')
                             ->label('Nombre de Fantasía')
-                            ->maxLength(50)
+                            ->maxLength(60)
+                            ->placeholder('Nombre de fantasía del cliente')
                             ->reactive()
                             ->afterStateUpdated(function (callable $set, $state) {
                                 if ($state) {
@@ -101,27 +98,23 @@ class CustomerResource extends Resource
                             ->required(),
                         TextInput::make('phone')
                             ->label('Teléfono')
-                            ->maxLength(20)
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('phone', strtoupper($state));
-                                }
-                            })
+                            ->placeholder('Teléfono del cliente (sin el cero)')
+                            ->numeric()
+                            ->minValue(1)
+                            ->minLength(8)
+                            ->maxLength(11)
                             ->prefix('+595')
                             ->required(),
                         TextInput::make('phone_alt')
                             ->label('Teléfono 2')
-                            ->maxLength(20)
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('phone_alt', strtoupper($state));
-                                }
-                            })
+                            ->placeholder('Teléfono alternativo (sin el cero)')
+                            ->numeric()
+                            ->minLength(8)
+                            ->maxLength(11)
                             ->prefix('+595'),
                         TextInput::make('email')
                             ->label('Email')
+                            ->placeholder('Correo electrónico del cliente')
                             ->email()
                             ->maxLength(50)
                             ->reactive()
@@ -130,6 +123,24 @@ class CustomerResource extends Resource
                                     $set('email', strtolower($state));
                                 }
                             })
+                            ->required(),
+                        TextInput::make('address')
+                            ->label('Dirección')
+                            ->placeholder('Dirección domiciliaria del cliente')
+                            ->maxLength(100)
+                            ->reactive()
+                            ->afterStateUpdated(function (callable $set, $state) {
+                                if ($state) {
+                                    $set('address', strtoupper($state));
+                                }
+                            })
+                            ->required(),
+                        TextInput::make('house_number')
+                            ->label('Nro. Casa')
+                            ->placeholder('Número de la casa')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxLength(5)
                             ->required(),
                         Toggle::make('is_gov_supplier')
                             ->label('¿Es Proveedor del Estado?')
@@ -142,43 +153,17 @@ class CustomerResource extends Resource
                                     $set('is_gov_supplier', false);
                                 }
                             })
-                            ->required(),
-                        TextInput::make('address')
-                            ->label('Dirección')
-                            ->maxLength(100)
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('address', strtoupper($state));
-                                }
-                            })
-                            ->required(),
-                        TextInput::make('house_number')
-                            ->label('Nro. Casa')
-                            ->maxLength(20)
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('house_number', strtoupper($state));
-                                }
-                            })
+                            ->default(false)
                             ->required(),
                         Select::make('operation_type')
                             ->label('Tipo de Operación')
+                            ->placeholder('Seleccione el tipo de operación')
                             ->options([
                                 'B2B' => 'B2B',
                                 'B2C' => 'B2C',
                                 'B2G' => 'B2G',
                                 'B2F' => 'B2F',
                             ])
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state === 'B2G') {
-                                    $set('is_gov_supplier', true);
-                                } else {
-                                    $set('is_gov_supplier', false);
-                                }
-                            })
                             ->required(),
                     ])->columns(3),
 
@@ -186,23 +171,24 @@ class CustomerResource extends Resource
                     ->schema([
                         Select::make('agent_id')
                             ->label('Agente')
+                            ->placeholder('Seleccione el agente')
                             ->searchable()
                             ->preload()
                             ->reactive()
                             ->live(),
                         TextInput::make('group')
-                            ->label('Grupo'),
+                            ->label('Grupo')
+                            ->placeholder('Grupo del cliente'),
                         Select::make('series')
                             ->label('Serie')
-                            ->reactive()
+                            ->placeholder('Seleccione la serie')
                             ->options([
                                 'Ticket' => 'Ticket',
                             ])
-                            ->default('Ticket')
                             ->required(),
                         Select::make('payment_method')
                             ->label('Forma de pago')
-                            ->reactive()
+                            ->placeholder('Seleccione la forma de pago')
                             ->options([
                                 'Contado' => 'Contado',
                                 'Crédito' => 'Crédito',
@@ -211,29 +197,23 @@ class CustomerResource extends Resource
                             ->required(),
                         TextInput::make('payment_days')
                             ->label('Días de pago')
-                            ->hint('Ejemplo: 1,15,31')
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('payment_days', strtoupper($state));
-                                }
-                            })
+                            ->placeholder('Días de pago (1,15,31)')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxLength(2)
                             ->required(),
-                    ])->columns(3),
-
-                Section::make('Observaciones')
-                    ->schema([
                         Textarea::make('notes')
                             ->label('Observaciones')
-                            ->columnSpanFull()
+                            ->placeholder('Observaciones o notas del cliente')
+                            ->rows(1)
                             ->maxLength(500)
                             ->reactive()
                             ->afterStateUpdated(function (callable $set, $state) {
                                 if ($state) {
                                     $set('notes', strtoupper($state));
                                 }
-                            }),
-                    ]),
+                            })
+                    ])->columns(3),
             ]);
     }
 
@@ -241,27 +221,35 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
-                TextColumn::make('fantasy_name')->label('Nombre Fantasía')->searchable(),
-                TextColumn::make('document_number')->label('Doc.'),
-                TextColumn::make('phone')->label('Teléfono'),
-                TextColumn::make('email')->label('Email')->toggleable(),
-                TextColumn::make('operation_type')->label('Tipo Op.')->sortable(),
-                IconColumn::make('is_gov_supplier')
-                    ->label('Proveedor del Estado')
-                    ->boolean()
+                TextColumn::make('name')
+                    ->label('Nombre')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('fantasy_name')
+                    ->label('Nombre Fantasía')
+                    ->searchable(),
+                TextColumn::make('document_number')
+                    ->label('Doc.')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('phone')
+                    ->label('Teléfono')
+                    ->searchable()
+                    ->sortable()
+                    ->prefix('+595'),
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable()
+                    ->url(fn (Customer $record): string => 'mailto:' . $record->email)
+                    ->openUrlInNewTab(),
+                TextColumn::make('created_at')
+                    ->label('Creado')
+                    ->dateTime()
+                    ->sortable()
                     ->toggleable(),
-                TextColumn::make('created_at_custom')->label('F. Creación')->date()->sortable(),
-
             ])
-            ->filters([
-                SelectFilter::make('operation_type')->label('Tipo de Operación')
-                    ->options([
-                        'B2B' => 'B2B',
-                        'B2C' => 'B2C',
-                    ]),
-                TernaryFilter::make('is_gov_supplier')->label('Proveedor del Estado'),
-            ])->defaultSort('created_at_custom', 'desc')
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
