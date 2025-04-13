@@ -47,6 +47,7 @@ class ItineraryResource extends Resource
                     ->searchable()
                     ->preload()
                     ->live()
+                    ->native(false)
                     ->required(),
                 Select::make('origin_city_id')
                     ->label('Origen')

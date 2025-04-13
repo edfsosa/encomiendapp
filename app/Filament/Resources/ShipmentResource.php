@@ -66,9 +66,11 @@ class ShipmentResource extends Resource
                                 'Parcial' => 'Parcial',
                             ])
                             ->required(),
-                        TextInput::make('user_id')
+                        select::make('user_id')
                             ->label('Usuario')
+                            ->relationship('user', 'name')
                             ->disabled()
+                            ->dehydrated()
                             ->hiddenOn('create')
                             ->required(),
                     ])->columns(3),

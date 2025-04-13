@@ -21,7 +21,7 @@
                 <form action="{{ route('tracking.search') }}" method="POST" class="card p-4 shadow-sm">
                     @csrf
                     <div class="mb-3">
-                        <label for="tracking_number" class="form-label">Número de seguimiento</label>
+                        <label for="tracking_number" class="form-label">Tracking ID</label>
                         <input type="text" name="tracking_number" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Rastrear Envío</button>
