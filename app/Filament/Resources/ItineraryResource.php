@@ -33,6 +33,14 @@ class ItineraryResource extends Resource
                     ->disabled()
                     ->hiddenOn('create')
                     ->required(),
+                TextInput::make('name')
+                    ->label('Nombre')
+                    ->placeholder('Nombre del itinerario')
+                    ->hiddenOn('create')
+                    ->disabled()
+                    ->dehydrated()
+                    ->reactive()
+                    ->required(),
                 Select::make('agency_id')
                     ->label('Agencia')
                     ->relationship('agency', 'name')
@@ -67,6 +75,10 @@ class ItineraryResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('name')
+                    ->label('Nombre')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('agency.name')

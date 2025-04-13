@@ -22,7 +22,7 @@ class AgencyResource extends Resource
     protected static ?string $label = 'Agencia';
     protected static ?string $pluralLabel = 'Agencias';
     protected static ?string $slug = 'agencias';
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form

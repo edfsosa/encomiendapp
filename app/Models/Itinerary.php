@@ -12,9 +12,24 @@ class Itinerary extends Model
 
     protected $fillable = [
         'agency_id',
-        'origin',
-        'destination',
+        'origin_city_id',
+        'destination_city_id',
+        'name',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($itinerary) {
+            if ($itinerary->origin_city_id && $itinerary->destination_city_id) {
+                $origin = City::find($itinerary->origin_city_id);
+                $destination = City::find($itinerary->destination_city_id);
+
+                $itinerary->name = $origin->name . '-' . $destination->name;
+            }
+        });
+    }
 
     public function agency(): BelongsTo
     {
