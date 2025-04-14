@@ -26,8 +26,6 @@ class Shipment extends Model
         'addressee_email',
         'payment_method',
         'payment_status',
-        'total_items',
-        'total_cost',
         'observation'
     ];
 
@@ -39,20 +37,6 @@ class Shipment extends Model
             } while (Shipment::where('tracking_number', $code)->exists());
 
             $shipment->tracking_number = $code;
-        });
-
-        static::saving(function ($shipment) {
-
-            $totalItems = $shipment->shipmentItems->count();
-            $totalCost = 0;
-
-            foreach ($shipment->shipmentItems as $item) {
-                
-                $totalCost += $item->subtotal;
-            }
-
-            $shipment->total_items = $totalItems;
-            $shipment->total_cost = $totalCost;
         });
     }
 
@@ -82,8 +66,29 @@ class Shipment extends Model
         return $this->belongsTo(PackageStatus::class);
     }
 
-    public function shipmentItems(): HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(ShipmentItem::class);
+    }
+
+    public function totalCost()
+    {
+        return $this->items->sum(fn($item) => $item->subtotal());
+    }
+
+
+    public function totalItems()
+    {
+        return $this->items->sum('quantity');
+    }
+
+    public function formattedTotalCost()
+    {
+        return number_format($this->totalCost(), 0, ',', '.');
+    }
+
+    public function formattedTotalItems()
+    {
+        return number_format($this->totalItems(), 0, ',', '.');
     }
 }

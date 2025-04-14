@@ -26,8 +26,6 @@ return new class extends Migration
             $table->string('addressee_email')->nullable();
             $table->string('payment_method');
             $table->string('payment_status');
-            $table->integer('total_items')->default(0);
-            $table->integer('total_cost')->default(0);
             $table->text('observation')->nullable();
             $table->timestamps();
         });

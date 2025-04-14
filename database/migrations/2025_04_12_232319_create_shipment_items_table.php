@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('shipment_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade')->nullable();
             $table->integer('quantity');
-            $table->integer('subtotal');
+            $table->integer('price')->nullable(); // Precio unitario usado en el momento del envío
             $table->timestamps();
         });
     }

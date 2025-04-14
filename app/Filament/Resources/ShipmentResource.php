@@ -15,6 +15,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -146,101 +147,66 @@ class ShipmentResource extends Resource
 
                 Section::make('Productos del envío')
                     ->schema([
-                        Repeater::make('shipmentItems')
-                            ->relationship('shipmentItems')
-                            ->label('')
+                        Repeater::make('items')
+                            ->relationship()
                             ->schema([
                                 Select::make('product_id')
                                     ->label('Producto')
-                                    ->placeholder('Selecciona un producto')
-                                    ->relationship('product', 'description')
-                                    ->searchable()
-                                    ->preload()
+                                    ->options(Product::pluck('description', 'id'))
                                     ->reactive()
-                                    ->live()
-                                    ->native(false)
-                                    ->required()
-                                    ->afterStateUpdated(function (callable $set, $state) {
-                                        if ($state) {
-                                            $product = Product::find($state);
-                                            if ($product) {
-                                                $set('price', $product->price);
-                                            }
-                                        }
+                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                        $price = Product::find($state)?->price ?? 0;
+                                        $set('price', $price);
                                     }),
 
                                 TextInput::make('quantity')
                                     ->label('Cantidad')
-                                    ->placeholder('Cantidad de productos')
                                     ->numeric()
-                                    ->minValue(1)
-                                    ->maxValue(100)
                                     ->default(1)
                                     ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                                        $set('subtotal', $state * $get('price'));
-                                    }),
+                                    ->reactive(),
+
 
                                 TextInput::make('price')
                                     ->label('Precio Unitario')
-                                    ->readonly()
-                                    ->required()
-                                    ->dehydrated()
-                                    ->reactive()
-                                    ->afterStateHydrated(function (callable $set, callable $get) {
-                                        $set('price', $get('price'));
-                                    })
-                                    ->afterStateUpdated(function (callable $set, callable $get) {
-                                        $set('price', $get('price'));
-                                    }),
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->dehydrated(true) // esto es lo importante
+                                    ->required(),
 
-                                TextInput::make('subtotal')
+
+
+                                Placeholder::make('subtotal')
                                     ->label('Subtotal')
-                                    ->readonly()
-                                    ->required()
-                                    ->dehydrated()
-                                    ->reactive()
-                                    ->afterStateHydrated(function (callable $set, callable $get) {
-                                        $set('subtotal', $get('quantity') * $get('price'));
-                                    })
-                                    ->afterStateUpdated(function (callable $set, callable $get) {
-                                        $set('subtotal', $get('quantity') * $get('price'));
+                                    ->content(function (callable $get) {
+                                        $price = $get('price') ?? 0;
+                                        $quantity = $get('quantity') ?? 0;
+                                        return number_format($price * $quantity, 0, ',', '.') . ' Gs';
                                     }),
                             ])
-                            ->columns(4)
-                            ->collapsible()
-                            ->minItems(1)
-                            ->itemLabel(fn(array $state): ?string => $state['name'] ?? null),
+                            ->defaultItems(1)
+                            ->columns(4),
+
                     ]),
 
 
                 Section::make('Resumen del envío')
                     ->schema([
-                        TextInput::make('total_items')
-                            ->label('Total ítems')
-                            ->readonly()
-                            ->hiddenOn('create'),
+                        // Totales
+                        Placeholder::make('total_items')
+                            ->label('Total Ítems')
+                            ->content(fn(?Shipment $record) => $record?->totalItems() ?? 0),
 
-                        TextInput::make('total_cost')
-                            ->label('Costo total')
-                            ->disabled()
-                            ->dehydrated()
-                            ->reactive()
-                            ->afterStateHydrated(function (Set $set, Get $get) {
-                                $set('total_cost', collect($get('items'))->sum('subtotal'));
-                            })
-                            ->afterStateUpdated(function (Set $set, Get $get) {
-                                $set('total_cost', collect($get('items'))->sum('subtotal'));
-                            })
-                            ->visible(fn(Get $get) => count($get('items') ?? []) > 0),
+                        Placeholder::make('total_cost')
+                            ->label('Total Costo')
+                            ->content(fn(?Shipment $record) => $record?->formattedTotalCost() ?? '0'),
                         Textarea::make('observation')
                             ->label('Observaciones')
                             ->maxLength(500)
                             ->reactive()
                             ->placeholder('Observaciones del envío')
                             ->afterStateUpdated(fn($set, $state) => $set('observation', strtoupper($state))),
-                    ])->columns(1),
+                    ])->columns(3),
 
             ]);
     }

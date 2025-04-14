@@ -14,7 +14,7 @@ class ShipmentItem extends Model
         'shipment_id',
         'product_id',
         'quantity',
-        'subtotal',
+        'price'
     ];
 
     public function shipment(): BelongsTo
@@ -25,5 +25,15 @@ class ShipmentItem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function subtotal(): int
+    {
+        return ($this->product?->price ?? 0) * $this->quantity;
+    }
+
+    public function formattedSubtotal(): string
+    {
+        return number_format($this->subtotal(), 0, ',', '.');
     }
 }

@@ -108,7 +108,7 @@
 
         <div class="line"></div>
 
-        @if ($shipment->shipmentItems->count())
+        @if ($shipment->items->count())
             <div class="section">
                 <strong>Detalle de Productos:</strong>
                 <table width="100%">
@@ -121,12 +121,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($shipment->shipmentItems as $item)
+                        @foreach ($shipment->items as $item)
                             <tr>
                                 <td>{{ $item->product->description ?? '-' }}</td>
                                 <td>{{ $item->quantity }}</td>
-                                <td>{{ number_format($item->product->price, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->price, 0, ',', '.') }}</td>
+                                <td>{{ number_format($item->subtotal(), 0, ',', '.') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -136,8 +136,8 @@
         @endif
 
         <div class="section">
-            <strong>Total Ítems:</strong> {{ $shipment->total_items }}<br>
-            <strong>Total Costo:</strong> {{ number_format($shipment->total_cost, 0, ',', '.') }} Gs
+            <strong>Total Ítems:</strong> {{ $shipment->totalItems() }}<br>
+            <strong>Total Costo:</strong> {{ number_format($shipment->totalCost(), 0, ',', '.') }} Gs
         </div>
 
         <div class="line"></div>

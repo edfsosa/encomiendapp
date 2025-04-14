@@ -16,7 +16,7 @@ class ShipmentTicketController extends Controller
             'packageStatus',
             'itinerary.originCity',
             'itinerary.destinationCity',
-            'shipmentItems',
+            'items',
         ]);
 
         return view('shipments.ticket', compact('shipment'));
@@ -30,7 +30,7 @@ class ShipmentTicketController extends Controller
             'packageStatus',
             'itinerary.originCity',
             'itinerary.destinationCity',
-            'shipmentItems',
+            'items',
         ]);
 
         $pdf = Pdf::loadView('shipments.ticket', compact('shipment'));
