@@ -21,6 +21,7 @@ class CityResource extends Resource
     protected static ?string $label = 'Ciudad';
     protected static ?string $pluralLabel = 'Ciudades';
     protected static ?string $slug = 'ciudades';
+    protected static ?string $navigationGroup = 'Administración';
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $recordTitleAttribute = 'name';
 

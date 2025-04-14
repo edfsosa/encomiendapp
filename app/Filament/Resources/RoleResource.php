@@ -22,7 +22,7 @@ use Spatie\Permission\Models\Role as ModelsRole;
 class RoleResource extends Resource
 {
     protected static ?string $model = ModelsRole::class;
-    protected static ?string $navigationGroup = 'Configuración';
+    protected static ?string $navigationGroup = 'Administración';
     protected static ?string $navigationLabel = 'Roles';
     protected static ?string $label = 'Rol';
     protected static ?string $pluralLabel = 'Roles';

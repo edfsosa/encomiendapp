@@ -72,9 +72,14 @@ class ShipmentResource extends Resource
                             ->label('Usuario')
                             ->relationship('user', 'name')
                             ->disabled()
-                            ->dehydrated()
                             ->hiddenOn('create')
                             ->required(),
+                        Textarea::make('observation')
+                            ->label('Observaciones')
+                            ->maxLength(500)
+                            ->reactive()
+                            ->placeholder('Observaciones del envío')
+                            ->afterStateUpdated(fn($set, $state) => $set('observation', strtoupper($state))),
                     ])->columns(3),
 
                 Section::make('Cliente e itinerario')
@@ -185,6 +190,7 @@ class ShipmentResource extends Resource
                                     }),
                             ])
                             ->defaultItems(1)
+                            ->minItems(1)
                             ->columns(4),
 
                     ]),
@@ -200,13 +206,7 @@ class ShipmentResource extends Resource
                         Placeholder::make('total_cost')
                             ->label('Total Costo')
                             ->content(fn(?Shipment $record) => $record?->formattedTotalCost() ?? '0'),
-                        Textarea::make('observation')
-                            ->label('Observaciones')
-                            ->maxLength(500)
-                            ->reactive()
-                            ->placeholder('Observaciones del envío')
-                            ->afterStateUpdated(fn($set, $state) => $set('observation', strtoupper($state))),
-                    ])->columns(3),
+                    ])->columns(2),
 
             ]);
     }

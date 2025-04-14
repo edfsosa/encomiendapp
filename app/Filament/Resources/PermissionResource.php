@@ -18,7 +18,7 @@ use Spatie\Permission\Models\Permission as ModelsPermission;
 class PermissionResource extends Resource
 {
     protected static ?string $model = ModelsPermission::class;
-    protected static ?string $navigationGroup = 'Configuración';
+    protected static ?string $navigationGroup = 'Administración';
     protected static ?string $navigationLabel = 'Permisos';
     protected static ?string $label = 'Permiso';
     protected static ?string $pluralLabel = 'Permisos';
