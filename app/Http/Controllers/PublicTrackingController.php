@@ -18,7 +18,7 @@ class PublicTrackingController extends Controller
             'tracking_number' => 'required|string',
         ]);
 
-        $shipment = Shipment::with(['customer', 'driver', 'packageStatus'])->where('tracking_number', $request->tracking_number)->first();
+        $shipment = Shipment::with(['customer', 'driver', 'packageStatus', 'itinerary'])->where('tracking_number', $request->tracking_number)->first();
 
         if (!$shipment) {
             return back()->with('error', 'No se encontró el envío con ese número de seguimiento.');

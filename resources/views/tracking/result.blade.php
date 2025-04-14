@@ -41,7 +41,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <h6>🔹 Enviado por</h6>
-                    <p>{{ $shipment->customer->name }}</p>
+                    <p>
+                        {{ $shipment->customer->name }}<br>
+                        {{ $shipment->itinerary->originCity->name }}
+                        
+                    </p>
                 </div>
 
                 <div class="col-md-6">

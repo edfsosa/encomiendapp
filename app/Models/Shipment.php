@@ -40,6 +40,20 @@ class Shipment extends Model
 
             $shipment->tracking_number = $code;
         });
+
+        static::saving(function ($shipment) {
+
+            $totalItems = $shipment->shipmentItems->count();
+            $totalCost = 0;
+
+            foreach ($shipment->shipmentItems as $item) {
+                
+                $totalCost += $item->subtotal;
+            }
+
+            $shipment->total_items = $totalItems;
+            $shipment->total_cost = $totalCost;
+        });
     }
 
 

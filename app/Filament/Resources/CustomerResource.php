@@ -4,7 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use App\Models\Department;
 use App\Models\Customer;
+use App\Models\User;
+use App\Models\City;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\{Section, TextInput, Select, DatePicker, Textarea, Toggle, Repeater};
@@ -155,12 +160,6 @@ class CustomerResource extends Resource
                                     ->label('Nombre')
                                     ->placeholder('Nombre (casa, oficina, etc.)')
                                     ->maxLength(60)
-                                    ->reactive()
-                                    ->afterStateUpdated(function (callable $set, $state) {
-                                        if ($state) {
-                                            $set('name', strtoupper($state));
-                                        }
-                                    })
                                     ->required(),
                                 TextInput::make('house_number')
                                     ->label('Nro. Casa')
@@ -180,28 +179,38 @@ class CustomerResource extends Resource
                                         }
                                     })
                                     ->required(),
-                                TextInput::make('city')
-                                    ->label('Ciudad')
-                                    ->placeholder('Ciudad del domicilio')
-                                    ->maxLength(50)
-                                    ->reactive()
-                                    ->afterStateUpdated(function (callable $set, $state) {
-                                        if ($state) {
-                                            $set('city', strtoupper($state));
-                                        }
-                                    })
-                                    ->required(),
-                                TextInput::make('department')
+                                Select::make('department_id')
                                     ->label('Departamento')
-                                    ->placeholder('Departamento del domicilio')
-                                    ->maxLength(50)
+                                    ->placeholder('Seleccione el departamento')
+                                    ->options(Department::all()->pluck('name', 'id'))
                                     ->reactive()
-                                    ->afterStateUpdated(function (callable $set, $state) {
-                                        if ($state) {
-                                            $set('department', strtoupper($state));
-                                        }
-                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->live()
+                                    ->loadingMessage('Cargando departamentos...')
+                                    ->noSearchResultsMessage('No se encontraron departamentos')
+                                    ->searchDebounce(500)
+                                    ->native(false)
                                     ->required(),
+
+                                Select::make('city_id')
+                                    ->label('Ciudad')
+                                    ->placeholder('Seleccione la ciudad')
+                                    ->options(function (Get $get) {
+                                        $deptId = $get('department_id');
+                                        if (!$deptId) return [];
+
+                                        return City::where('department_id', $deptId)->pluck('name', 'id');
+                                    })
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    ->live()
+                                    ->loadingMessage('Cargando ciudades...')
+                                    ->noSearchResultsMessage('No se encontraron ciudades')
+                                    ->searchDebounce(500)
+                                    ->native(false)
+                                    ->reactive(),
                                 TextInput::make('postal_code')
                                     ->label('Código Postal')
                                     ->placeholder('Código postal del domicilio')
@@ -224,10 +233,18 @@ class CustomerResource extends Resource
                         Select::make('agent_id')
                             ->label('Agente')
                             ->placeholder('Seleccione el agente')
+                            ->options(function () {
+                                return User::where('position', 'Agente')
+                                    ->pluck('name', 'id');
+                            })
                             ->searchable()
                             ->preload()
-                            ->reactive()
-                            ->live(),
+                            ->live()
+                            ->loadingMessage('Cargando agentes...')
+                            ->noSearchResultsMessage('No se encontraron agentes')
+                            ->searchDebounce(500)
+                            ->native(false)
+                            ->required(),
                         TextInput::make('group')
                             ->label('Grupo')
                             ->placeholder('Grupo del cliente'),
@@ -248,8 +265,8 @@ class CustomerResource extends Resource
                             ])
                             ->required(),
                         TextInput::make('payment_days')
-                            ->label('Días de pago')
-                            ->placeholder('Días de pago (1,15,31)')
+                            ->label('Día de pago')
+                            ->placeholder('Día de pago (1,15,31)')
                             ->numeric()
                             ->minValue(1)
                             ->maxLength(2)

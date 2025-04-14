@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ShipmentResource\Pages;
 use App\Filament\Resources\ShipmentResource\RelationManagers;
 use App\Models\Shipment;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -146,7 +147,7 @@ class ShipmentResource extends Resource
                 Section::make('Productos del envío')
                     ->schema([
                         Repeater::make('shipmentItems')
-                            ->relationship()
+                            ->relationship('shipmentItems')
                             ->label('')
                             ->schema([
                                 Select::make('product_id')
@@ -157,10 +158,11 @@ class ShipmentResource extends Resource
                                     ->preload()
                                     ->reactive()
                                     ->live()
+                                    ->native(false)
                                     ->required()
                                     ->afterStateUpdated(function (callable $set, $state) {
                                         if ($state) {
-                                            $product = \App\Models\Product::find($state);
+                                            $product = Product::find($state);
                                             if ($product) {
                                                 $set('price', $product->price);
                                             }
@@ -174,25 +176,35 @@ class ShipmentResource extends Resource
                                     ->minValue(1)
                                     ->maxValue(100)
                                     ->default(1)
-                                    ->required(),
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                        $set('subtotal', $state * $get('price'));
+                                    }),
 
                                 TextInput::make('price')
                                     ->label('Precio Unitario')
-                                    ->numeric()
+                                    ->readonly()
                                     ->required()
-                                    ->reactive(),
-
+                                    ->dehydrated()
+                                    ->reactive()
+                                    ->afterStateHydrated(function (callable $set, callable $get) {
+                                        $set('price', $get('price'));
+                                    })
+                                    ->afterStateUpdated(function (callable $set, callable $get) {
+                                        $set('price', $get('price'));
+                                    }),
 
                                 TextInput::make('subtotal')
                                     ->label('Subtotal')
-                                    ->numeric()
-                                    ->disabled()
+                                    ->readonly()
+                                    ->required()
                                     ->dehydrated()
                                     ->reactive()
-                                    ->afterStateHydrated(function ($set, $get) {
+                                    ->afterStateHydrated(function (callable $set, callable $get) {
                                         $set('subtotal', $get('quantity') * $get('price'));
                                     })
-                                    ->afterStateUpdated(function ($set, $get) {
+                                    ->afterStateUpdated(function (callable $set, callable $get) {
                                         $set('subtotal', $get('quantity') * $get('price'));
                                     }),
                             ])
@@ -207,18 +219,8 @@ class ShipmentResource extends Resource
                     ->schema([
                         TextInput::make('total_items')
                             ->label('Total ítems')
-                            ->disabled()
-                            ->dehydrated()
-                            ->numeric()
-                            ->reactive()
-                            ->afterStateHydrated(
-                                fn($set, $get) =>
-                                $set('total_items', collect($get('items'))->sum('quantity'))
-                            )
-                            ->afterStateUpdated(
-                                fn($set, $get) =>
-                                $set('total_items', collect($get('items'))->sum('quantity'))
-                            ),
+                            ->readonly()
+                            ->hiddenOn('create'),
 
                         TextInput::make('total_cost')
                             ->label('Costo total')

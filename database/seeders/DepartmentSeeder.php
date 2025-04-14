@@ -35,7 +35,7 @@ class DepartmentSeeder extends Seeder
         foreach ($departments as $data) {
             \App\Models\Department::updateOrCreate(
                 ['id' => $data['id']],
-                ['name' => $data['name']]
+                ['name' => strtoupper($data['name'])]
             );
         }
     }

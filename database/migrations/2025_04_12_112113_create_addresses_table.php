@@ -17,8 +17,7 @@ return new class extends Migration
             $table->string('name'); // Nombre de la dirección (casa, oficina, etc.)
             $table->string('house_number'); // Número de casa
             $table->string('address'); // Dirección
-            $table->string('city'); // Ciudad
-            $table->string('department'); // Departamento
+            $table->foreignId('city_id')->constrained()->onDelete('cascade'); // Ciudad
             $table->string('postal_code')->nullable(); // Código postal
             $table->timestamps();
         });
