@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['Persona física', 'Persona jurídica'])->default('Persona física');
+            $table->string('type');
             $table->string('document_type')->nullable(); // CI / RUC / etc.
             $table->string('document_number')->nullable();
             $table->string('fantasy_name')->nullable();
