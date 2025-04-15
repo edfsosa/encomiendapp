@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -22,6 +23,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Product::class;
     protected static ?string $label = 'Producto';
     protected static ?string $pluralLabel = 'Productos';

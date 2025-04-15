@@ -25,10 +25,6 @@ class StatusLogsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('changed_at')
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('changed_at')
                     ->label('Fecha')
                     ->dateTime('d/m/Y H:i')

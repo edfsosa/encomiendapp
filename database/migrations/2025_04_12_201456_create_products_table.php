@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('description');
             $table->boolean('is_active')->default(true);
-            $table->string('type');
             $table->string('tax'); // Ej: IVA 10%
             $table->integer('price'); // Precio del producto
             $table->timestamps();

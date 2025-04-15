@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ShipmentResource\Pages;
 use App\Filament\Resources\ShipmentResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\PackageStatus;
 use App\Models\Shipment;
 use App\Models\Product;
@@ -28,6 +29,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ShipmentResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Shipment::class;
     protected static ?string $label = 'Envio';
     protected static ?string $pluralLabel = 'Envios';
@@ -42,17 +45,14 @@ class ShipmentResource extends Resource
                     ->schema([
                         TextInput::make('tracking_number')
                             ->label('Tracking ID')
-                            ->disabled()
-                            ->dehydrated()
+                            ->readOnly()
                             ->hiddenOn('create')
                             ->required(),
-                        DatePicker::make('shipment_date')
-                            ->label('Fecha de envío')
-                            ->placeholder('Selecciona una fecha')
-                            ->native(false)
-                            ->closeOnDateSelection()
+                        DatePicker::make('created_at')
+                            ->label('Fecha')
                             ->displayFormat('d/m/Y')
-                            ->default(now())
+                            ->hiddenOn('create')
+                            ->readOnly()
                             ->required(),
                         Select::make('package_status_id')
                             ->label('Estado del envío')
@@ -70,7 +70,7 @@ class ShipmentResource extends Resource
                                 'Parcial' => 'Parcial',
                             ])
                             ->required(),
-                        select::make('user_id')
+                        Select::make('user_id')
                             ->label('Usuario')
                             ->relationship('user', 'name')
                             ->disabled()
@@ -221,20 +221,16 @@ class ShipmentResource extends Resource
                     ->label('Tracking ID')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('shipment_date')
-                    ->label('Fecha de envío')
-                    ->date('d/m/Y')
-                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Fecha')
+                    ->sortable()
+                    ->date('d/m/Y'),
                 TextColumn::make('customer.name')
                     ->label('Cliente')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('addressee_name')
                     ->label('Destinatario')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('payment_method')
-                    ->label('Método de pago')
                     ->sortable()
                     ->searchable(),
                 SelectColumn::make('package_status_id')
@@ -246,14 +242,6 @@ class ShipmentResource extends Resource
                     ->label('Usuario')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('created_at')
-                    ->label('Creado')
-                    ->sortable()
-                    ->dateTime(),
-                TextColumn::make('updated_at')
-                    ->label('Actualizado')
-                    ->sortable()
-                    ->dateTime(),
             ])
             ->filters([
                 //

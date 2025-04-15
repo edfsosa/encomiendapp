@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use App\Models\Department;
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CustomerResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Customer::class;
     protected static ?string $label = 'Cliente';
     protected static ?string $pluralLabel = 'Clientes';

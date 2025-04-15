@@ -14,7 +14,6 @@ class Shipment extends Model
 
     protected $fillable = [
         'tracking_number',
-        'shipment_date',
         'customer_id',
         'itinerary_id',
         'driver_id',
@@ -25,7 +24,6 @@ class Shipment extends Model
         'addressee_phone',
         'addressee_email',
         'payment_method',
-        'payment_status',
         'observation'
     ];
 

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CityResource\Pages;
 use App\Filament\Resources\CityResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\City;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CityResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = City::class;
     protected static ?string $label = 'Ciudad';
     protected static ?string $pluralLabel = 'Ciudades';

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -20,6 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = User::class;
     protected static ?string $navigationGroup = 'Administración';
     protected static ?string $navigationLabel = 'Usuarios';
@@ -56,10 +59,9 @@ class UserResource extends Resource
                 TextInput::make('password')
                     ->password()
                     ->required()
-                    ->confirmed()
-                    ->maxLength(255)
-                    ->dehydrated(fn($state) => !empty($state))
-                    ->visible(fn($record) => $record === null),
+                    ->maxLength(60)
+                    ->revealable()
+                    ->hiddenOn('edit'),
                 TextInput::make('phone')
                     ->label('Teléfono')
                     ->placeholder('Número (sin el cero)')

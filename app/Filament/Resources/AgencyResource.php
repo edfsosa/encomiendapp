@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AgencyResource\Pages;
 use App\Filament\Resources\AgencyResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\Agency;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AgencyResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Agency::class;
     protected static ?string $label = 'Agencia';
     protected static ?string $pluralLabel = 'Agencias';

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ItineraryResource\Pages;
 use App\Filament\Resources\ItineraryResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\Itinerary;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ItineraryResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Itinerary::class;
     protected static ?string $label = 'Itinerario';
     protected static ?string $pluralLabel = 'Itinerarios';

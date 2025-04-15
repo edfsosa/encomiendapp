@@ -3,46 +3,24 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Ticket de Envío</title>
+    <title>{{ $shipment->tracking_number }}</title>
     <style>
-        @media print {
-            body {
-                width: 58mm;
-                font-family: monospace;
-                font-size: 12px;
-                margin: 0;
-            }
-
-            .ticket {
-                padding: 10px;
-            }
-
-            .text-center {
-                text-align: center;
-            }
-
-            .bold {
-                font-weight: bold;
-            }
-
-            .line {
-                border-top: 1px dashed black;
-                margin: 5px 0;
-            }
-
-            .section {
-                margin-bottom: 8px;
-            }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: monospace;
-            font-size: 12px;
+            font-size: 10px;
+            width: 164pt;
+            /* 58mm */
+            padding: 5px;
         }
 
         .ticket {
-            width: 58mm;
-            padding: 10px;
+            width: 100%;
         }
 
         .text-center {
@@ -54,12 +32,35 @@
         }
 
         .line {
-            border-top: 1px dashed black;
-            margin: 5px 0;
+            border-top: 1px dashed #000;
+            margin: 4px 0;
         }
 
         .section {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 1px 2px;
+            word-wrap: break-word;
+        }
+
+        img {
+            max-width: 40px;
+            height: auto;
+            display: block;
+            margin: 0 auto 4px auto;
+        }
+
+        .signature {
+            height: 20px;
+            border-bottom: 1px solid #000;
+            margin: 4px 0;
         }
     </style>
 </head>
@@ -67,96 +68,78 @@
 <body>
     <div class="ticket">
         <div class="text-center">
-            <img src="{{ asset('storage/images/logo.png') }}" alt="Logo" style="width: 50px; height: auto;">
-        </div>
-        
-        <div class="text-center bold">RUTA 10 SRL</div>
-        <div class="text-center">Transporte de cargas y encomiendas</div>
-        <div class="text-center">Carios c/ Av. La Victoria</div>
-        <div class="text-center">Asunción, Paraguay</div>
-        <div class="text-center">Tel: (021) 123-4567</div>
-        <div class="text-center">RUC: 12345678-9</div>
-        <div class="text-center">Ticket de Envío</div>
-        <div class="line"></div>
-
-        <div class="section">
-            <strong>Tracking:</strong> {{ $shipment->tracking_number }}<br>
-            <strong>Fecha:</strong> {{ $shipment->shipment_date }}<br>
-            <strong>Pago:</strong> {{ $shipment->payment_status }} / {{ $shipment->payment_method }}<br>
-            <strong>Agente:</strong> {{ $shipment->user->name ?? '-' }}<br>
-            <strong>Conductor:</strong> {{ $shipment->driver->name ?? '-' }}<br>
-            <strong>Vehículo:</strong> {{ $shipment->driver->brand . ' ' . $shipment->driver->model ?? '-' }}<br>
-            <strong>N° Chapa:</strong> {{ $shipment->driver->license_plate ?? '-' }}<br>
+            <img src="{{ asset('storage/images/logo.png') }}" alt="Logo">
+            <div class="bold">RUTA 10 SRL</div>
+            <div>Transporte de cargas</div>
+            <div>Carios c/ Av. La Victoria</div>
+            <div>Asunción, Paraguay</div>
+            <div>Tel: (021) 123-4567</div>
+            <div class="bold">Ticket de Envío</div>
         </div>
 
         <div class="line"></div>
 
         <div class="section">
-            <strong>Remitente:</strong> {{ $shipment->customer->name }}<br>
-            <strong>Origen:</strong> {{ $shipment->itinerary->originCity->name ?? '-' }}<br>
-            <strong>Teléfono:</strong> {{ $shipment->customer->phone }}<br>
+            <div>Tracking: <strong>{{ $shipment->tracking_number }}</strong></div>
+            <div>Fecha y hora: {{ $shipment->created_at }}</div>
+            <div>Pago: {{ $shipment->payment_status }}</div>
+            <div>Transportista: {{ $shipment->driver->name }}</div>
+            <div>Vehiculo: {{ $shipment->driver->brand . ' ' . $shipment->driver->model ?? '-' }}</div>
+            <div>Obs: {{ $shipment->observation ?? '-' }}</div>
         </div>
 
         <div class="line"></div>
 
         <div class="section">
-            <strong>Destinatario:</strong> {{ $shipment->addressee_name }}<br>
-            <strong>Destino:</strong> {{ $shipment->itinerary->destinationCity->name ?? '-' }}<br>
-            <strong>Dirección:</strong> {{ $shipment->addressee_address }}<br>
-            <strong>Teléfono:</strong> {{ $shipment->addressee_phone }}<br>
+            <div>Remitente: {{ $shipment->customer->name }}</div>
+            <div>Origen: {{ $shipment->itinerary->originCity->name ?? '-' }}</div>
+            <div>Tel: {{ $shipment->customer->phone }}</div>
+        </div>
+
+        <div class="section">
+            <div>Destinatario: {{ $shipment->addressee_name }}</div>
+            <div>Destino: {{ $shipment->itinerary->destinationCity->name ?? '-' }}</div>
+            <div>Tel: {{ $shipment->addressee_phone }}</div>
         </div>
 
         <div class="line"></div>
 
         @if ($shipment->items->count())
             <div class="section">
-                <strong>Detalle de Productos:</strong>
-                <table width="100%">
-                    <thead>
+                <table>
+                    @foreach ($shipment->items as $item)
                         <tr>
-                            <td><strong>Desc</strong></td>
-                            <td><strong>Cant</strong></td>
-                            <td><strong>Unit</strong></td>
-                            <td><strong>Subtotal</strong></td>
+                            <td colspan="2">{{ $item->product->description ?? '-' }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($shipment->items as $item)
-                            <tr>
-                                <td>{{ $item->product->description ?? '-' }}</td>
-                                <td>{{ $item->quantity }}</td>
-                                <td>{{ number_format($item->price, 0, ',', '.') }}</td>
-                                <td>{{ number_format($item->subtotal(), 0, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
+                        <tr>
+                            <td>x{{ $item->quantity }}</td>
+                            <td>{{ $item->price }}</td>
+                            <td style="text-align: right;">
+                                {{ number_format($item->subtotal(), 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    @endforeach
                 </table>
             </div>
-            <div class="line"></div>
         @endif
 
+        <div class="line"></div>
+
         <div class="section">
-            <strong>Total Ítems:</strong> {{ $shipment->totalItems() }}<br>
-            <strong>Total Costo:</strong> {{ number_format($shipment->totalCost(), 0, ',', '.') }} Gs
+            <div><strong>Total:</strong> {{ number_format($shipment->totalCost(), 0, ',', '.') }} Gs</div>
         </div>
 
         <div class="line"></div>
 
-        <div class="section">
-            <strong>Recibido por:</strong><br>
-            <div style="height: 50px; border-bottom: 1px solid black;"></div>
-            <div style="text-align: center;">Firma</div>
-
-            <strong>Entregado por:</strong>
-            <div style="height: 50px; border-bottom: 1px solid black;"></div>
-            <div style="text-align: center;">Firma</div>
-
+        <div class="section"><br>
+            <div class="signature"></div>
+            <div class="text-center">Firma</div>
         </div>
 
         <div class="line"></div>
-        <div class="text-center">¡Gracias por confiar en nosotros!</div>
+
+        <div class="text-center">¡Gracias por la confianza!</div>
     </div>
-
     <script>
         window.onload = function() {
             window.print();

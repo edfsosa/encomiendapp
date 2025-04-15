@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\Shipment;
 use App\Models\Customer;
 use App\Models\Product;
@@ -17,6 +18,7 @@ use Filament\Forms\Components\DatePicker;
 
 class Reports extends Page implements HasTable
 {
+    use HasResourcePermissions;
     use InteractsWithTable;
 
     protected static ?string $navigationIcon = 'heroicon-o-document';

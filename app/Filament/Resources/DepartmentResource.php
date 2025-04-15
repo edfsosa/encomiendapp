@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DepartmentResource\Pages;
 use App\Filament\Resources\DepartmentResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DepartmentResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Department::class;
     protected static ?string $label = 'Departamento';
     protected static ?string $pluralLabel = 'Departamentos';

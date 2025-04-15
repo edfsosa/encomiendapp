@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PackageStatusResource\Pages;
 use App\Filament\Resources\PackageStatusResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\PackageStatus;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PackageStatusResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = PackageStatus::class;
     protected static ?string $label = 'Estado';
     protected static ?string $pluralLabel = 'Estados';

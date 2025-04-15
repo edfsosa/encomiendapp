@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
+use App\Filament\Traits\HasResourcePermissions;
 use App\Models\Role;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
@@ -21,6 +22,8 @@ use Spatie\Permission\Models\Role as ModelsRole;
 
 class RoleResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = ModelsRole::class;
     protected static ?string $navigationGroup = 'Administración';
     protected static ?string $navigationLabel = 'Roles';

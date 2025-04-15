@@ -13,11 +13,14 @@ class ShipmentTicketController extends Controller
         $shipment->load([
             'customer',
             'driver',
-            'packageStatus',
+            'status',
             'itinerary.originCity',
             'itinerary.destinationCity',
             'items',
         ]);
+
+        $pdf = Pdf::loadView('shipments.ticket', compact('shipment'))
+            ->setPaper([0, 0, 164.41, 99.21]);
 
         return view('shipments.ticket', compact('shipment'));
     }
@@ -27,13 +30,15 @@ class ShipmentTicketController extends Controller
         $shipment->load([
             'customer',
             'driver',
-            'packageStatus',
+            'status',
             'itinerary.originCity',
             'itinerary.destinationCity',
             'items',
         ]);
 
-        $pdf = Pdf::loadView('shipments.ticket', compact('shipment'));
+        $pdf = Pdf::loadView('shipments.ticket', compact('shipment'))
+            ->setPaper([0, 0, 164.41, 99.21]);
+
         return $pdf->download($shipment->tracking_number . '.pdf');
     }
 }

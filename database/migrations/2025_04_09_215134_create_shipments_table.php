@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_number')->unique();
-            $table->date('shipment_date');
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->foreignId('itinerary_id')->constrained()->onDelete('cascade');
             $table->foreignId('driver_id')->constrained()->onDelete('cascade');
@@ -25,7 +24,6 @@ return new class extends Migration
             $table->string('addressee_phone');
             $table->string('addressee_email')->nullable();
             $table->string('payment_method');
-            $table->string('payment_status');
             $table->text('observation')->nullable();
             $table->timestamps();
         });

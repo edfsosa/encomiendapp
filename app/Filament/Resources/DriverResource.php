@@ -16,9 +16,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Traits\HasResourcePermissions;
 
 class DriverResource extends Resource
 {
+    use HasResourcePermissions;
+
     protected static ?string $model = Driver::class;
     protected static ?string $label = 'Conductor';
     protected static ?string $pluralLabel = 'Conductores';
