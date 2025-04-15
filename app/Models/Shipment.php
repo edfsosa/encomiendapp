@@ -40,6 +40,10 @@ class Shipment extends Model
         });
     }
 
+    public function statusLogs(): HasMany
+    {
+        return $this->hasMany(ShipmentStatusLog::class);
+    }
 
     public function customer(): BelongsTo
     {
@@ -61,9 +65,9 @@ class Shipment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function packageStatus(): BelongsTo
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(PackageStatus::class);
+        return $this->belongsTo(PackageStatus::class, 'package_status_id');
     }
 
     public function items(): HasMany

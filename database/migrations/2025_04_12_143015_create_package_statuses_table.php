@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('package_statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique(); // Código de Estado como '001', '002'
             $table->string('name'); // Nombre del Estado
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ShipmentResource\Pages;
 use App\Filament\Resources\ShipmentResource\RelationManagers;
+use App\Models\PackageStatus;
 use App\Models\Shipment;
 use App\Models\Product;
 use Filament\Forms;
@@ -20,6 +21,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -55,7 +57,7 @@ class ShipmentResource extends Resource
                         Select::make('package_status_id')
                             ->label('Estado del envío')
                             ->placeholder('Selecciona un estado')
-                            ->relationship('packageStatus', 'name')
+                            ->relationship('status', 'name')
                             ->searchable()
                             ->preload()
                             ->hiddenOn('create')
@@ -235,8 +237,9 @@ class ShipmentResource extends Resource
                     ->label('Método de pago')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('packageStatus.name')
-                    ->label('Estado del envío')
+                SelectColumn::make('package_status_id')
+                    ->label('Estado')
+                    ->options(PackageStatus::pluck('name', 'id')->toArray())
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('user.name')
@@ -261,6 +264,24 @@ class ShipmentResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('cambiar_estado')
+                        ->label('Cambiar Estado')
+                        ->icon('heroicon-o-arrow-path')
+                        ->form([
+                            Select::make('estado_id')
+                                ->label('Selecciona el nuevo estado')
+                                ->options(PackageStatus::pluck('name', 'id'))
+                                ->required(),
+                        ])
+                        ->action(function ($records, array $data) {
+                            $records->each(fn($record) => $record->update([
+                                'package_status_id' => $data['estado_id'],
+                            ]));
+                        })
+                        ->deselectRecordsAfterCompletion()
+                        ->color('primary')
+                        ->modalHeading('Actualizar estado de envíos')
+                        ->requiresConfirmation()
                 ]),
             ]);
     }
@@ -268,7 +289,7 @@ class ShipmentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\StatusLogsRelationManager::class
         ];
     }
 
