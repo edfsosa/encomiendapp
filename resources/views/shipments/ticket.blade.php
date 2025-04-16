@@ -13,7 +13,7 @@
 
         body {
             font-family: monospace;
-            font-size: 10px;
+            font-size: 12px;
             width: 164pt;
             /* 58mm */
             padding: 5px;
@@ -68,21 +68,21 @@
 <body>
     <div class="ticket">
         <div class="text-center">
-            <img src="{{ asset('storage/images/logo.png') }}" alt="Logo">
+            <img src="{{ asset('storage/images/logo-ruta10.png') }}" alt="Logo">
             <div class="bold">RUTA 10 SRL</div>
             <div>Transporte de cargas</div>
             <div>Carios c/ Av. La Victoria</div>
             <div>Asunción, Paraguay</div>
             <div>Tel: (021) 123-4567</div>
-            <div class="bold">Ticket de Envío</div>
+            <div class="bold">Ticket {{ $shipment->tracking_number }}</div>
         </div>
 
         <div class="line"></div>
 
         <div class="section">
-            <div>Tracking: <strong>{{ $shipment->tracking_number }}</strong></div>
-            <div>Fecha y hora: {{ $shipment->created_at }}</div>
-            <div>Pago: {{ $shipment->payment_status }}</div>
+            <div>Fecha y hora: {{ date('d/m/Y', strtotime($shipment->created_at)) }}</div>
+            <div>Hora: {{ date('H:i', strtotime($shipment->created_at)) }}</div>
+            <div>Pago: {{ $shipment->payment_method }}</div>
             <div>Transportista: {{ $shipment->driver->name }}</div>
             <div>Vehiculo: {{ $shipment->driver->brand . ' ' . $shipment->driver->model ?? '-' }}</div>
             <div>Obs: {{ $shipment->observation ?? '-' }}</div>
@@ -133,7 +133,11 @@
 
         <div class="section"><br>
             <div class="signature"></div>
-            <div class="text-center">Firma</div>
+            <div class="text-center">Firma destinatario</div>
+
+            <br>
+            <div class="signature"></div>
+            <div class="text-center">Firma transportista</div>
         </div>
 
         <div class="line"></div>

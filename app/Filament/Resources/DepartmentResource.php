@@ -40,12 +40,6 @@ class DepartmentResource extends Resource
                     ->label('Departamento')
                     ->placeholder('Nombre del departamento')
                     ->maxLength(60)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $set('name', strtoupper($state));
-                        }
-                    })
                     ->required(),
             ]);
     }

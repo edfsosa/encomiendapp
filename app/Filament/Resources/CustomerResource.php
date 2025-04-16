@@ -41,15 +41,9 @@ class CustomerResource extends Resource
                 Section::make('Datos generales')
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nombre')
-                            ->placeholder('Nombre del cliente')
-                            ->maxLength(60)
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('name', strtoupper($state));
-                                }
-                            })
+                            ->label('Nombre completo')
+                            ->placeholder('Ingrese el nombre y apellido del cliente')
+                            ->maxLength(100)
                             ->required(),
                         Select::make('type')
                             ->label('Tipo')
@@ -83,7 +77,7 @@ class CustomerResource extends Resource
                             ->required(),
                         TextInput::make('document_number')
                             ->label('Nro. Documento')
-                            ->placeholder('Número de documento')
+                            ->placeholder('Ingrese el número de documento')
                             ->numeric()
                             ->minValue(1)
                             ->maxLength(20)
@@ -96,13 +90,7 @@ class CustomerResource extends Resource
                         TextInput::make('fantasy_name')
                             ->label('Nombre de Fantasía')
                             ->maxLength(60)
-                            ->placeholder('Nombre de fantasía del cliente')
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('fantasy_name', strtoupper($state));
-                                }
-                            })
+                            ->placeholder('Ingrese el nombre de fantasía del cliente')
                             ->required(),
                         TextInput::make('phone')
                             ->label('Teléfono')
@@ -114,15 +102,15 @@ class CustomerResource extends Resource
                             ->prefix('+595')
                             ->required(),
                         TextInput::make('phone_alt')
-                            ->label('Teléfono 2')
+                            ->label('Teléfono alternativo (opcional)')
                             ->placeholder('Alternativo (sin el cero)')
                             ->numeric()
                             ->minLength(8)
                             ->maxLength(11)
                             ->prefix('+595'),
                         TextInput::make('email')
-                            ->label('Email')
-                            ->placeholder('Correo electrónico del cliente')
+                            ->label('E-mail')
+                            ->placeholder('Ingrese el correo electrónico del cliente')
                             ->email()
                             ->maxLength(50)
                             ->reactive()
@@ -175,12 +163,6 @@ class CustomerResource extends Resource
                                     ->label('Dirección')
                                     ->placeholder('Dirección del domicilio')
                                     ->maxLength(100)
-                                    ->reactive()
-                                    ->afterStateUpdated(function (callable $set, $state) {
-                                        if ($state) {
-                                            $set('address', strtoupper($state));
-                                        }
-                                    })
                                     ->required(),
                                 Select::make('department_id')
                                     ->label('Departamento')
@@ -279,12 +261,6 @@ class CustomerResource extends Resource
                             ->placeholder('Observaciones o notas del cliente')
                             ->rows(1)
                             ->maxLength(500)
-                            ->reactive()
-                            ->afterStateUpdated(function (callable $set, $state) {
-                                if ($state) {
-                                    $set('notes', strtoupper($state));
-                                }
-                            })
                     ])->columns(3),
             ]);
     }

@@ -36,34 +36,16 @@ class AgencyResource extends Resource
                     ->label('Nombre')
                     ->placeholder('Nombre de la agencia')
                     ->maxLength(50)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $set('name', strtoupper($state));
-                        }
-                    })
                     ->required(),
                 TextInput::make('city')
                     ->label('Ciudad')
                     ->placeholder('Ciudad de la agencia')
                     ->maxLength(50)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $set('city', strtoupper($state));
-                        }
-                    })
                     ->required(),
                 TextInput::make('address')
                     ->label('Dirección')
                     ->placeholder('Dirección de la agencia')
                     ->maxLength(100)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $set('address', strtoupper($state));
-                        }
-                    })
                     ->required(),
                 TextInput::make('phone')
                     ->label('Teléfono')

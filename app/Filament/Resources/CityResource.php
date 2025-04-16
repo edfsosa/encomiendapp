@@ -41,11 +41,6 @@ class CityResource extends Resource
                     ->label('Nombre')
                     ->placeholder('Ingrese el nombre de la ciudad')
                     ->maxLength(60)
-                    ->reactive()
-                    ->dehydrated()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        $set('name', strtoupper($state));
-                    })
                     ->required(),
                 Select::make('department_id')
                     ->label('Departamento')

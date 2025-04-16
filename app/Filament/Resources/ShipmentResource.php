@@ -62,14 +62,6 @@ class ShipmentResource extends Resource
                             ->preload()
                             ->hiddenOn('create')
                             ->required(),
-                        Select::make('payment_status')
-                            ->label('Estado de pago')
-                            ->options([
-                                'Pendiente' => 'Pendiente',
-                                'Pagado' => 'Pagado',
-                                'Parcial' => 'Parcial',
-                            ])
-                            ->required(),
                         Select::make('user_id')
                             ->label('Usuario')
                             ->relationship('user', 'name')
@@ -79,9 +71,7 @@ class ShipmentResource extends Resource
                         Textarea::make('observation')
                             ->label('Observaciones')
                             ->maxLength(500)
-                            ->reactive()
-                            ->placeholder('Observaciones del envío')
-                            ->afterStateUpdated(fn($set, $state) => $set('observation', strtoupper($state))),
+                            ->placeholder('Observaciones del envío'),
                     ])->columns(3),
 
                 Section::make('Cliente e itinerario')
@@ -122,16 +112,12 @@ class ShipmentResource extends Resource
                             ->label('Nombre completo')
                             ->placeholder('Nombre y apellido del destinatario')
                             ->maxLength(60)
-                            ->reactive()
-                            ->afterStateUpdated(fn($set, $state) => $set('addressee_name', strtoupper($state)))
                             ->required(),
 
                         TextInput::make('addressee_address')
                             ->label('Dirección')
                             ->placeholder('Dirección de entrega')
                             ->maxLength(100)
-                            ->reactive()
-                            ->afterStateUpdated(fn($set, $state) => $set('addressee_address', strtoupper($state)))
                             ->required(),
 
                         TextInput::make('addressee_phone')

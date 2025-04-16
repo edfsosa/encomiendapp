@@ -44,12 +44,6 @@ class ProductResource extends Resource
                     ->label('Descripción')
                     ->placeholder('Descripción del producto o servicio')
                     ->maxLength(60)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $set('description', strtoupper($state));
-                        }
-                    })
                     ->required(),
                 Select::make('tax')
                     ->label('Impuesto')

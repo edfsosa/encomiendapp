@@ -43,54 +43,32 @@ class DriverResource extends Resource
                     ->unique(ignoreRecord: true),
                 TextInput::make('name')
                     ->label('Conductor')
+                    ->placeholder('Ingrese el nombre completo del conductor')
                     ->maxLength(60)
                     ->minLength(3)
-                    ->placeholder('Nombre completo del conductor')
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        $set('name', strtoupper($state));
-                    })
-                    ->dehydrated(fn($state) => ! blank($state))
                     ->required(),
                 TextInput::make('number_car')
                     ->label('Coche')
-                    ->maxLength(5)
-                    ->placeholder('Nro. de coche')
+                    ->placeholder('Ingrese el número de coche')
                     ->numeric()
                     ->minValue(1)
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        $set('number_car', strtoupper($state));
-                    })
-                    ->dehydrated(fn($state) => ! blank($state))
+                    ->maxLength(5)
                     ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('license_plate')
                     ->label('Chapa')
+                    ->placeholder('Ingrese el número de patente')
                     ->maxLength(10)
-                    ->placeholder('Chapa del coche')
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        $set('license_plate', strtoupper($state));
-                    })
                     ->required(),
                 TextInput::make('brand')
                     ->label('Marca')
                     ->maxLength(20)
-                    ->placeholder('Marca del coche')
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        $set('brand', strtoupper($state));
-                    })
+                    ->placeholder('Ingrese la marca del coche')
                     ->required(),
                 TextInput::make('model')
                     ->label('Modelo')
                     ->maxLength(20)
                     ->placeholder('Modelo del coche')
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        $set('model', strtoupper($state));
-                    })
                     ->required(),
                 Toggle::make('is_active')
                     ->label('Activo')
